@@ -1,0 +1,66 @@
+# Logging Adapter Examples
+# Realistic examples for Splunk, Sentinel, and AWS CloudTrail.
+
+version: 1.0.0
+schema: logging-adapter-schema
+last_updated: 2026-04-19
+
+events:
+  - id: splunk-evt-001
+    timestamp: "2026-04-19T22:31:00Z"
+    source:
+      system: splunk
+      subsystem: "auth"
+      event_type: "login_success"
+      severity: info
+    identity:
+      subject_id: "subj-123"
+      roles: ["clinician"]
+    context:
+      session_id: "sess-abc"
+      environment: "prod"
+      ip_address: "10.1.2.3"
+    action:
+      verb: "authenticate"
+      target: "ehr.portal"
+    governance:
+      predicates_triggered: []
+      enforcement_decision: "allowed"
+
+  - id: sentinel-evt-004
+    timestamp: "2026-04-19T22:32:10Z"
+    source:
+      system: sentinel
+      subsystem: "data_access"
+      event_type: "read"
+      severity: high
+    identity:
+      subject_id: "subj-999"
+      roles: ["finance_analyst"]
+    context:
+      workflow_id: "fin-wf-22"
+      environment: "prod"
+    action:
+      verb: "read"
+      target: "payments.transaction"
+    governance:
+      predicates_triggered:
+        - "osfi-b13-access-004"
+      enforcement_decision: "allowed"
+
+  - id: cloudtrail-evt-007
+    timestamp: "2026-04-19T22:33:45Z"
+    source:
+      system: cloudtrail
+      event_type: "iam-policy-change"
+      severity: critical
+    identity:
+      subject_id: "agent-77"
+      roles: ["automation_agent"]
+    action:
+      verb: "update"
+      target: "iam.policy"
+    governance:
+      predicates_triggered:
+        - "abuse-prevention-001"
+      enforcement_decision: "denied"

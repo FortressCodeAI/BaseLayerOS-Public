@@ -1,0 +1,30 @@
+flowchart LR
+    A[Agent / Workflow Request] --> B[Identity Binding<br>(IBEL)]
+    B --> C[Constitutional Evaluation<br>(CEL)]
+    C --> D[Regulatory Predicate Evaluation<br>(RIE)]
+    D --> E[Workflow Compliance Check<br>(WCF)]
+    E --> F[Data Access Evaluation<br>(GDAL)]
+    F --> G[Deterministic Execution<br>(DMAR)]
+    G --> H[Forensic Recording<br>(ITFS)]
+    H --> I[Explainability Capture<br>(EDE)]
+
+    subgraph GovernanceLayers[Governance Layers]
+        CEL
+        RIE
+        WCF
+        GDAL
+    end
+
+    subgraph ExecutionLayer[Execution Layer]
+        IBEL
+        DMAR
+    end
+
+    subgraph ForensicsLayer[Forensics Layer]
+        ITFS
+        EDE
+    end
+
+    style GovernanceLayers fill:#f7f7f7,stroke:#999,stroke-width:1px
+    style ExecutionLayer fill:#f7f7f7,stroke:#999,stroke-width:1px
+    style ForensicsLayer fill:#f7f7f7,stroke:#999,stroke-width:1px

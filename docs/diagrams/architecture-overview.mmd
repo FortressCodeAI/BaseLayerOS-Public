@@ -1,0 +1,54 @@
+flowchart TB
+    subgraph GovernanceCore[Governance Core]
+        CEL[Constitutional Enforcement Layer]
+        RIE[Regulatory Interpretation Engine]
+        WCF[Workflow Compliance Fabric]
+        GDAL[Governed Data Access Layer]
+        NAS[No-Abuse Substrate]
+    end
+
+    subgraph ExecutionCore[Execution Core]
+        IBEL[Identity-Bound Execution Layer]
+        CIIPL[Cross-Industry Identity & Permissions Layer]
+        DMAR[Deterministic Multi-Agent Runtime]
+    end
+
+    subgraph ForensicsCore[Forensics Core]
+        ITFS[Immutable Temporal Forensics Substrate]
+        EDE[Explainable Decisioning Engine]
+    end
+
+    subgraph EvolutionCore[Evolution Core]
+        AEP[Autonomous Evolution Pipeline]
+        SCGE[Simulation & Certainty-Gating Engine]
+        BSAE[Blueprinting & Self-Architecture Engine]
+    end
+
+    subgraph IntegrationLayer[Universal Integration SDK]
+        IAL[Identity Adapter Layer]
+        GPA[Governance Predicate Adapter]
+        WEA[Workflow & Event Adapter]
+        FLA[Forensics & Logging Adapter]
+    end
+
+    IAL --> IBEL
+    GPA --> CEL
+    WEA --> WCF
+    FLA --> ITFS
+
+    IBEL --> DMAR
+    CIIPL --> DMAR
+
+    CEL --> DMAR
+    RIE --> CEL
+    WCF --> DMAR
+    GDAL --> DMAR
+    NAS --> DMAR
+
+    DMAR --> ITFS
+    ITFS --> EDE
+
+    AEP --> SCGE
+    SCGE --> CEL
+    AEP --> BSAE
+    BSAE --> CEL

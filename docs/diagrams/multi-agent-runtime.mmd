@@ -1,0 +1,42 @@
+flowchart TB
+    subgraph Agents[Agents & Workflows]
+        A1[Agent 1]
+        A2[Agent 2]
+        A3[Workflow Step]
+    end
+
+    subgraph Identity[Identity Binding]
+        IBEL[Identity-Bound Execution Layer]
+        CIIPL[Cross-Industry Identity & Permissions Layer]
+    end
+
+    subgraph Governance[Governance Enforcement]
+        CEL[Constitutional Enforcement Layer]
+        RIE[Regulatory Interpretation Engine]
+        WCF[Workflow Compliance Fabric]
+        GDAL[Governed Data Access Layer]
+        NAS[No-Abuse Substrate]
+    end
+
+    subgraph Runtime[Deterministic Multi-Agent Runtime]
+        DMAR[DMAR<br>Deterministic Execution<br>Message Passing<br>Conflict Resolution]
+    end
+
+    subgraph Forensics[Forensics & Explainability]
+        ITFS[Immutable Temporal Forensics Substrate]
+        EDE[Explainable Decisioning Engine]
+    end
+
+    A1 --> IBEL
+    A2 --> IBEL
+    A3 --> IBEL
+
+    IBEL --> CIIPL --> DMAR
+
+    DMAR --> CEL
+    DMAR --> RIE
+    DMAR --> WCF
+    DMAR --> GDAL
+    DMAR --> NAS
+
+    DMAR --> ITFS --> EDE

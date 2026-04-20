@@ -1,0 +1,72 @@
+flowchart TB
+    %% Top: External Inputs
+    subgraph External[External Environment]
+        IAM[Identity Providers<br>Azure AD / AWS IAM / Okta]
+        Regs[Regulations & Policies<br>PHIPA / OSFI / GDPR / AI Act / NIST]
+        WF[Workflow Systems<br>ServiceNow / Jira / SAP / EHR]
+        DataSys[Data Systems<br>DBs / EHR / Financial Systems]
+        SIEM[SIEM / Logging<br>Splunk / Sentinel / CloudTrail]
+    end
+
+    %% SDK
+    subgraph SDK[Universal Integration SDK]
+        IAL[Identity Adapter Layer]
+        GPA[Governance Predicate Adapter]
+        WEA[Workflow & Event Adapter]
+        FLA[Forensics & Logging Adapter]
+    end
+
+    %% Substrate: Governance
+    subgraph GovCore[Governance Core]
+        CEL[Constitutional Enforcement Layer]
+        RIE[Regulatory Interpretation Engine]
+        WCF[Workflow Compliance Fabric]
+        GDAL[Governed Data Access Layer]
+        NAS[No-Abuse Substrate]
+    end
+
+    %% Substrate: Execution
+    subgraph ExecCore[Execution Core]
+        IBEL[Identity-Bound Execution Layer]
+        CIIPL[Cross-Industry Identity & Permissions Layer]
+        DMAR[Deterministic Multi-Agent Runtime]
+    end
+
+    %% Substrate: Forensics & Explainability
+    subgraph ForensicsCore[Forensics & Explainability]
+        ITFS[Immutable Temporal Forensics Substrate]
+        EDE[Explainable Decisioning Engine]
+    end
+
+    %% Substrate: Evolution
+    subgraph EvoCore[Evolution Core]
+        AEP[Autonomous Evolution Pipeline]
+        SCGE[Simulation & Certainty-Gating Engine]
+        BSAE[Blueprinting & Self-Architecture Engine]
+    end
+
+    %% Flows: Identity Pathway
+    IAM --> IAL --> IBEL --> CIIPL --> DMAR
+
+    %% Flows: Policy Pathway
+    Regs --> GPA --> RIE --> CEL
+    CEL --> DMAR
+    RIE --> WCF
+    RIE --> GDAL
+    NAS --> DMAR
+
+    %% Flows: Workflow Pathway
+    WF --> WEA --> WCF --> DMAR
+
+    %% Flows: Data Pathway
+    DataSys <-- GDAL
+    DMAR --> GDAL
+
+    %% Flows: Forensics Pathway
+    DMAR --> ITFS --> EDE
+    ITFS --> FLA --> SIEM
+
+    %% Flows: Evolution Pathway
+    AEP --> SCGE --> CEL
+    AEP --> BSAE --> CEL
+    AEP --> ITFS

@@ -1,0 +1,69 @@
+# Identity Adapter Configuration
+# Provider-specific mappings for Azure AD, Okta, AWS IAM, and LDAP.
+
+version: 1.0.0
+schema: identity-adapter
+last_updated: 2026-04-19
+
+providers:
+  azure_ad:
+    type: oidc
+    issuer: "https://login.microsoftonline.com/{tenant_id}/v2.0"
+    client_id: "{client_id}"
+    claim_mappings:
+      subject_id: "oid"
+      display_name: "name"
+      roles: "roles"
+      groups: "groups"
+      attributes:
+        department: "department"
+        job_title: "jobTitle"
+        jurisdiction: "extension_jurisdiction"
+    entitlement_mappings:
+      - source: "roles"
+        prefix: "aad.role."
+      - source: "groups"
+        prefix: "aad.group."
+
+  okta:
+    type: oidc
+    issuer: "https://{domain}.okta.com/oauth2/default"
+    client_id: "{client_id}"
+    claim_mappings:
+      subject_id: "sub"
+      display_name: "name"
+      roles: "groups"
+      attributes:
+        organization: "org"
+        clearance_level: "clearance"
+    entitlement_mappings:
+      - source: "groups"
+        prefix: "okta.group."
+
+  aws_iam:
+    type: custom
+    mapping_script: "aws_iam_mapper.py"
+    claim_mappings:
+      subject_id: "arn"
+      roles: "policies"
+      attributes:
+        account_id: "account"
+        region: "region"
+    entitlement_mappings:
+      - source: "policies"
+        prefix: "iam.policy."
+
+  ldap:
+    type: ldap
+    url: "ldap://ldap.example.com"
+    base_dn: "dc=example,dc=com"
+    attribute_mappings:
+      subject_id: "uid"
+      display_name: "cn"
+      roles: "memberOf"
+      attributes:
+        department: "ou"
+        jurisdiction: "l"
+    entitlement_mappings:
+      - source: "memberOf"
+        prefix: "ldap.group."

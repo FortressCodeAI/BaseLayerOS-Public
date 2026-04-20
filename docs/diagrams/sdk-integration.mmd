@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph ExternalSystems[External Enterprise Systems]
+        IAM[Identity Providers<br>Azure AD / AWS IAM / Okta]
+        WF[Workflow Systems<br>ServiceNow / Jira / SAP]
+        POL[Policy Sources<br>Org Policies / Regulatory Inputs]
+        SIEM[SIEM / Logging<br>Splunk / Sentinel / CloudTrail]
+    end
+
+    subgraph SDK[Universal Integration SDK]
+        IAL[Identity Adapter Layer]
+        WEA[Workflow & Event Adapter]
+        GPA[Governance Predicate Adapter]
+        FLA[Forensics & Logging Adapter]
+    end
+
+    subgraph Substrate[BaseLayerOS Substrate]
+        IBEL[Identity-Bound Execution Layer]
+        WCF[Workflow Compliance Fabric]
+        CEL[Constitutional Enforcement Layer]
+        RIE[Regulatory Interpretation Engine]
+        GDAL[Governed Data Access Layer]
+        ITFS[Immutable Temporal Forensics Substrate]
+    end
+
+    IAM --> IAL --> IBEL
+    WF --> WEA --> WCF
+    POL --> GPA --> CEL
+    GPA --> RIE
+    SIEM <-- FLA <-- ITFS

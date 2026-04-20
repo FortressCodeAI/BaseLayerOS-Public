@@ -1,0 +1,39 @@
+flowchart LR
+    subgraph Inputs[Evolution Inputs]
+        RegChange[Regulatory Change]
+        PolicyChange[Policy Update]
+        WFChange[Workflow Change]
+        AgentChange[Agent Behavior Change]
+        ArchChange[Architecture / Blueprint Change]
+    end
+
+    subgraph AEP[Autonomous Evolution Pipeline]
+        Identify[Identify Evolution Target]
+        Propose[Propose Evolution Candidate]
+        Simulate[Simulate in SCGE]
+        RiskScore[Risk & Certainty Evaluation]
+        Approve[Human / Multi-Party Approval]
+        Deploy[Governed Deployment]
+        Rollback[Rollback Capability]
+    end
+
+    subgraph Governance[Governance Constraints]
+        CEL[Constitutional Enforcement Layer]
+        RIE[Regulatory Interpretation Engine]
+        NAS[No-Abuse Substrate]
+    end
+
+    subgraph Forensics[Forensics & Blueprinting]
+        ITFS[Immutable Temporal Forensics Substrate]
+        BSAE[Blueprinting & Self-Architecture Engine]
+    end
+
+    Inputs --> Identify --> Propose --> Simulate --> RiskScore --> Approve --> Deploy --> Rollback
+
+    Simulate --> CEL
+    Simulate --> RIE
+    Simulate --> NAS
+
+    Deploy --> BSAE
+    Deploy --> ITFS
+    Rollback --> ITFS

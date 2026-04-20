@@ -1,0 +1,95 @@
+# Governance Predicate Examples
+# Realistic examples for finance, healthcare, safety, and data governance.
+
+version: 1.0.0
+schema: governance-predicate-schema
+last_updated: 2026-04-19
+
+predicates:
+  - id: phipa-access-001
+    name: PHIPA – Clinician Access to Patient Record
+    description: >
+      Clinicians may access patient health records only when directly involved
+      in the patient's circle of care.
+    category: regulatory
+    source:
+      jurisdiction: CA-ON
+      regulation: PHIPA
+      article_or_section: 37(1)
+      authority: Ontario MoH
+    scope:
+      actors: ["clinician"]
+      resources: ["EHR.record"]
+      operations: ["read"]
+      environments: ["prod"]
+    effect: allow
+    conditions:
+      - id: c1
+        attribute: actor.role
+        operator: equals
+        value: "clinician"
+      - id: c2
+        attribute: context.patient_in_care
+        operator: equals
+        value: true
+    logic:
+      expression: "c1 AND c2"
+    obligations:
+      - id: o1
+        type: log
+        target: "ITFS"
+    severity: high
+
+  - id: osfi-b13-access-004
+    name: OSFI B-13 – Sensitive Financial Data Access
+    description: >
+      Access to sensitive financial data requires high assurance identity,
+      MFA, and explicit entitlement.
+    category: regulatory
+    source:
+      jurisdiction: CA-FED
+      regulation: OSFI-B13
+      article_or_section: "3.1.2"
+      authority: OSFI
+    scope:
+      actors: ["human", "agent"]
+      resources: ["payments.transaction", "customer.financial_profile"]
+      operations: ["read", "export"]
+      environments: ["prod"]
+    effect: allow
+    conditions:
+      - id: c1
+        attribute: session.auth_method
+        operator: in
+        value: ["mfa", "cert"]
+      - id: c2
+        attribute: actor.entitlements
+        operator: contains
+        value: "finance.sensitive.read"
+    logic:
+      expression: "c1 AND c2"
+    obligations:
+      - id: o1
+        type: escalate
+        target: "compliance_team"
+    severity: critical
+
+  - id: abuse-prevention-001
+    name: No-Abuse Substrate – Agent Self-Escalation Block
+    description: >
+      Agents may not escalate their own privileges or modify their own
+      entitlements under any circumstances.
+    category: abuse_prevention
+    source:
+      jurisdiction: global
+      regulation: BaseLayerOS-Internal
+      article_or_section: "NAS-1"
+      authority: BaseLayerOS
+    scope:
+      actors: ["agent"]
+      resources: ["identity.entitlements"]
+      operations: ["update", "escalate"]
+      environments: ["prod", "staging"]
+    effect: deny
+    conditions: []
+    severity: critical

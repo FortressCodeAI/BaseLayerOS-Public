@@ -1,0 +1,67 @@
+flowchart TB
+    subgraph Canada[Canada]
+        PIPEDA[PIPEDA]
+        PHIPA[PHIPA / Provincial Health Acts]
+        OSFI[OSFI B-10 / B-13 / E-21]
+        AIDA[AIDA]
+        DADM[DADM]
+    end
+
+    subgraph US[United States]
+        HIPAA[HIPAA / HITECH]
+        SOX[SOX]
+        GLBA[GLBA]
+        NIST[NIST AI RMF / 800-53]
+        StateLaws[State Privacy Laws]
+    end
+
+    subgraph EU[European Union]
+        GDPR[GDPR]
+        AIA[EU AI Act]
+        PSD2[PSD2]
+        eIDAS[eIDAS]
+    end
+
+    subgraph Global[Global Standards]
+        ISO27001[ISO 27001]
+        ISO42001[ISO 42001]
+        SOC2[SOC 2]
+        OECD[OECD AI Principles]
+    end
+
+    subgraph Layers[BaseLayerOS Layers]
+        CEL[Constitutional Enforcement Layer]
+        RIE[Regulatory Interpretation Engine]
+        WCF[Workflow Compliance Fabric]
+        GDAL[Governed Data Access Layer]
+        ITFS[Immutable Temporal Forensics Substrate]
+        EDE[Explainable Decisioning Engine]
+        AEP[Autonomous Evolution Pipeline]
+        NAS[No-Abuse Substrate]
+    end
+
+    %% Canada mappings
+    PIPEDA --> CEL
+    PHIPA --> GDAL
+    OSFI --> ITFS
+    AIDA --> RIE
+    DADM --> EDE
+
+    %% US mappings
+    HIPAA --> GDAL
+    SOX --> ITFS
+    GLBA --> GDAL
+    NIST --> CEL
+    StateLaws --> RIE
+
+    %% EU mappings
+    GDPR --> GDAL
+    AIA --> CEL
+    PSD2 --> WCF
+    eIDAS --> CIIPL
+
+    %% Global mappings
+    ISO27001 --> GDAL
+    ISO42001 --> CEL
+    SOC2 --> ITFS
+    OECD --> NAS

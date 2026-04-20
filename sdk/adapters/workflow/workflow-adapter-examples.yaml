@@ -1,0 +1,76 @@
+# Workflow Adapter Examples
+# Realistic examples for ServiceNow, Jira, and EHR clinical workflows.
+
+version: 1.0.0
+schema: workflow-adapter-schema
+last_updated: 2026-04-19
+
+workflows:
+  - id: servicenow-change-001
+    name: ServiceNow – Change Request Workflow
+    description: Standard IT change management workflow.
+    source:
+      system: servicenow
+      workflow_key: "change_request"
+      version: "v3.2"
+    actors:
+      - role: "change_manager"
+        type: human
+      - role: "automation_agent"
+        type: agent
+    steps:
+      - id: s1
+        name: "Submit Request"
+        type: human_task
+        required_roles: ["requester"]
+      - id: s2
+        name: "Risk Assessment"
+        type: agent_task
+        governance_predicates:
+          - "osfi-b13-access-004"
+      - id: s3
+        name: "Approval"
+        type: approval
+        required_roles: ["change_manager"]
+      - id: s4
+        name: "Implement Change"
+        type: service_call
+    transitions:
+      - { from: s1, to: s2 }
+      - { from: s2, to: s3 }
+      - { from: s3, to: s4 }
+
+  - id: ehr-clinical-002
+    name: EHR – Clinical Order Workflow
+    description: >
+      Physician orders a diagnostic test; lab processes; results returned.
+    source:
+      system: epic
+      workflow_key: "clinical_order"
+      version: "2026.1"
+    actors:
+      - role: "physician"
+        type: human
+      - role: "lab_technician"
+        type: human
+      - role: "ehr_agent"
+        type: agent
+    steps:
+      - id: s1
+        name: "Order Test"
+        type: human_task
+        required_roles: ["physician"]
+        governance_predicates:
+          - "phipa-access-001"
+      - id: s2
+        name: "Process Sample"
+        type: human_task
+        required_roles: ["lab_technician"]
+      - id: s3
+        name: "Record Results"
+        type: agent_task
+        governance_predicates:
+          - "phipa-access-001"
+    transitions:
+      - { from: s1, to: s2 }
+      - { from: s2, to: s3 }

@@ -1,0 +1,138 @@
+# Logging Adapter Schema
+# Canonical schema for the Forensics & Logging Adapter (FLA)
+# Normalizes logs from external systems into substrate-native forensic events
+# consumed by ITFS (Immutable Temporal Forensics Substrate) and EDE.
+
+version: 1.0.0
+schema_id: logging-adapter-schema
+description: >
+  Schema for normalizing external logs, events, and telemetry into
+  substrate-native forensic events for immutable recording, replay,
+  and explainability.
+
+metadata:
+  owner: BaseLayerOS
+  domain: forensics
+  status: stable
+  last_updated: 2026-04-19
+
+event:
+  id:
+    type: string
+    description: Globally unique event identifier.
+
+  timestamp:
+    type: string
+    format: date-time
+    description: Event occurrence timestamp (UTC).
+
+  source:
+    type: object
+    description: Origin of the event.
+    properties:
+      system:
+        type: string
+        description: External system name (e.g., "splunk", "sentinel", "cloudtrail").
+      subsystem:
+        type: string
+        description: Optional subsystem or module.
+      event_type:
+        type: string
+        description: Raw event type from the external system.
+      severity:
+        type: string
+        enum: [info, warning, error, critical]
+
+  identity:
+    type: object
+    description: >
+      Identity context resolved by IAL. Required for all events that
+      represent actions, decisions, or data access.
+    properties:
+      subject_id:
+        type: string
+      external_ids:
+        type: array
+        items:
+          type: object
+          properties:
+            provider: { type: string }
+            id: { type: string }
+      roles:
+        type: array
+        items: { type: string }
+      attributes:
+        type: object
+
+  context:
+    type: object
+    description: Execution context for the event.
+    properties:
+      workflow_id:
+        type: string
+      agent_id:
+        type: string
+      session_id:
+        type: string
+      environment:
+        type: string
+        enum: [prod, staging, simulated, sandbox]
+      location:
+        type: string
+      ip_address:
+        type: string
+
+  action:
+    type: object
+    description: >
+      Normalized representation of the action that occurred.
+    properties:
+      verb:
+        type: string
+        description: e.g., "read", "write", "execute", "escalate", "deny"
+      target:
+        type: string
+        description: Resource or object acted upon.
+      parameters:
+        type: object
+        description: Additional action-specific parameters.
+
+  data:
+    type: object
+    description: >
+      Optional data payload. MUST be redacted or transformed according
+      to GDAL and CEL rules before ingestion.
+    properties:
+      sensitivity:
+        type: string
+        enum: [none, low, medium, high, critical]
+      payload:
+        type: object
+
+  governance:
+    type: object
+    description: >
+      Governance metadata applied at the time of the event.
+    properties:
+      predicates_triggered:
+        type: array
+        items: { type: string }
+      enforcement_decision:
+        type: string
+        enum: [allowed, denied, transformed, escalated]
+      obligations_applied:
+        type: array
+        items: { type: string }
+
+  audit:
+    type: object
+    description: Lifecycle metadata for the event.
+    properties:
+      ingested_at:
+        type: string
+        format: date-time
+      ingested_by:
+        type: string
+      hash:
+        type: string
+        description: Cryptographic hash for ITFS immutability.

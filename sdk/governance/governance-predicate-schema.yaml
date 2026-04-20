@@ -1,0 +1,228 @@
+# Governance Predicate Schema
+# Canonical schema for representing governance predicates consumed by:
+# - CEL (Constitutional Enforcement Layer)
+# - RIE (Regulatory Interpretation Engine)
+# - WCF (Workflow Compliance Fabric)
+# - GDAL (Governed Data Access Layer)
+
+version: 1.0.0
+schema_id: governance-predicate-schema
+description: >
+  Canonical schema for governance predicates used to express constraints,
+  obligations, prohibitions, and conditions across identity, workflow,
+  data access, and regulatory domains.
+
+metadata:
+  owner: BaseLayerOS
+  domain: governance
+  status: stable
+  last_updated: 2026-04-19
+
+predicate:
+  id:
+    type: string
+    description: >
+      Globally unique identifier for this predicate.
+      SHOULD be stable and immutable once issued.
+  name:
+    type: string
+    description: Human-readable name for the predicate.
+  description:
+    type: string
+    description: Detailed description of the governance intent.
+  category:
+    type: string
+    enum:
+      - constitutional
+      - regulatory
+      - workflow
+      - data_access
+      - safety
+      - abuse_prevention
+      - audit
+    description: High-level classification of the predicate.
+
+  source:
+    type: object
+    description: Origin of the predicate.
+    properties:
+      jurisdiction:
+        type: string
+        description: >
+          Jurisdiction or region (e.g., "CA-ON", "US-FED", "EU").
+      regulation:
+        type: string
+        description: >
+          Source regulation or policy (e.g., "PHIPA", "OSFI-B13", "GDPR", "EU-AI-Act").
+      article_or_section:
+        type: string
+        description: >
+          Specific article, section, clause, or internal policy reference.
+      authority:
+        type: string
+        description: >
+          Issuing authority (e.g., "Ontario MoH", "OSFI", "EU Commission", "Internal-Policy").
+
+  scope:
+    type: object
+    description: Scope of application for this predicate.
+    properties:
+      actors:
+        type: array
+        items:
+          type: string
+        description: >
+          Actor types or roles this predicate applies to
+          (e.g., "clinician", "claims_adjuster", "llm_agent", "batch_job").
+      resources:
+        type: array
+        items:
+          type: string
+        description: >
+          Resource types or domains (e.g., "EHR.record", "payments.transaction",
+          "chat.session", "model.output").
+      operations:
+        type: array
+        items:
+          type: string
+        description: >
+          Operations this predicate governs (e.g., "read", "write", "update",
+          "delete", "execute", "escalate", "export").
+      environments:
+        type: array
+        items:
+          type: string
+        description: >
+          Environment tags (e.g., "prod", "staging", "simulated", "sandbox").
+
+  effect:
+    type: string
+    enum:
+      - allow
+      - deny
+      - require
+      - transform
+      - log
+      - escalate
+    description: >
+      Primary effect of the predicate:
+      - allow: explicitly permits an action under conditions
+      - deny: explicitly forbids an action
+      - require: mandates an action (e.g., consent, approval)
+      - transform: modifies data or behavior (e.g., redact, anonymize)
+      - log: requires forensic logging
+      - escalate: requires human or higher-tier review
+
+  conditions:
+    type: array
+    description: >
+      List of conditions that must be satisfied for the predicate to apply.
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the condition.
+        attribute:
+          type: string
+          description: >
+            Attribute path (e.g., "actor.role", "resource.type",
+            "context.location", "data.sensitivity").
+        operator:
+          type: string
+          enum:
+            - equals
+            - not_equals
+            - in
+            - not_in
+            - greater_than
+            - less_than
+            - exists
+            - not_exists
+            - matches
+            - not_matches
+        value:
+          description: >
+            Value to compare against. MAY be scalar, array, or structured,
+            depending on operator and attribute.
+        logical_group:
+          type: string
+          description: >
+            Optional logical group identifier for composing complex
+            boolean expressions (e.g., "groupA", "groupB").
+
+  logic:
+    type: object
+    description: >
+      Optional explicit boolean logic over conditions.
+      If omitted, defaults to AND over all conditions.
+    properties:
+      expression:
+        type: string
+        description: >
+          Boolean expression referencing condition.logical_group or condition.id
+          (e.g., "(groupA AND groupB) OR groupC").
+
+  obligations:
+    type: array
+    description: >
+      Actions that MUST be taken when this predicate is triggered.
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - notify
+            - log
+            - escalate
+            - require_consent
+            - require_approval
+            - mask_data
+            - anonymize
+            - halt
+        target:
+          type: string
+          description: >
+            Target of the obligation (e.g., "DPO", "compliance_team",
+            "supervising_physician", "security_officer").
+        parameters:
+          type: object
+          description: Implementation-specific parameters.
+
+  severity:
+    type: string
+    enum:
+      - low
+      - medium
+      - high
+      - critical
+    description: >
+      Impact level if this predicate is violated.
+
+  audit:
+    type: object
+    description: Audit and lifecycle metadata.
+    properties:
+      created_at:
+        type: string
+        format: date-time
+      created_by:
+        type: string
+      updated_at:
+        type: string
+        format: date-time
+      updated_by:
+        type: string
+      version:
+        type: string
+        description: Semantic version of this predicate definition.
+      status:
+        type: string
+        enum:
+          - draft
+          - active
+          - deprecated
+          - retired

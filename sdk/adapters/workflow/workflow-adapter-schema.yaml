@@ -1,0 +1,150 @@
+# Workflow Adapter Schema
+# Canonical schema for the Workflow & Event Adapter (WEA)
+# Normalizes external workflow systems into substrate-native workflow events
+# consumed by WCF, CEL, RIE, DMAR, and ITFS.
+
+version: 1.0.0
+schema_id: workflow-adapter-schema
+description: >
+  Schema for normalizing workflow definitions, steps, transitions,
+  and events from external workflow systems (ServiceNow, Jira, SAP,
+  EHR systems, BPM engines) into substrate-native workflow objects.
+
+metadata:
+  owner: BaseLayerOS
+  domain: workflow
+  status: stable
+  last_updated: 2026-04-19
+
+workflow:
+  id:
+    type: string
+    description: Globally unique workflow identifier.
+
+  name:
+    type: string
+    description: Human-readable workflow name.
+
+  description:
+    type: string
+
+  source:
+    type: object
+    description: External workflow system metadata.
+    properties:
+      system:
+        type: string
+        description: e.g., "servicenow", "jira", "sap", "epic", "cerner".
+      workflow_key:
+        type: string
+        description: External system workflow identifier.
+      version:
+        type: string
+
+  actors:
+    type: array
+    description: Actors involved in the workflow.
+    items:
+      type: object
+      properties:
+        role:
+          type: string
+        type:
+          type: string
+          enum: [human, agent, service]
+        attributes:
+          type: object
+
+  steps:
+    type: array
+    description: Ordered list of workflow steps.
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum:
+            - human_task
+            - agent_task
+            - service_call
+            - decision
+            - approval
+            - data_access
+        required_roles:
+          type: array
+          items: { type: string }
+        governance_predicates:
+          type: array
+          items: { type: string }
+        inputs:
+          type: array
+          items: { type: string }
+        outputs:
+          type: array
+          items: { type: string }
+
+  transitions:
+    type: array
+    description: Allowed transitions between workflow steps.
+    items:
+      type: object
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        condition:
+          type: string
+          description: Boolean expression or predicate reference.
+
+  events:
+    type: array
+    description: Workflow events emitted during execution.
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        step_id:
+          type: string
+        actor:
+          type: object
+          properties:
+            subject_id: { type: string }
+            roles:
+              type: array
+              items: { type: string }
+        action:
+          type: string
+          description: e.g., "start", "complete", "approve", "deny", "escalate"
+        data:
+          type: object
+        governance:
+          type: object
+          properties:
+            predicates_triggered:
+              type: array
+              items: { type: string }
+            enforcement_decision:
+              type: string
+              enum: [allowed, denied, transformed, escalated]
+
+  audit:
+    type: object
+    properties:
+      ingested_at:
+        type: string
+        format: date-time
+      ingested_by:
+        type: string
+      version:
+        type: string
